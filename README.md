@@ -2,7 +2,7 @@
 
 A Google Earth Engine App to explore lake ice extent on Lake Champlain using Sentinel-1 SAR data.
 
-The app can be found [here](https://astone.users.earthengine.app/view/champlain-ice)
+https://astone.users.earthengine.app/view/champlain-ice
 
 ### Layers
 Ice-On: The earliest winter date with ice coverage for each pixel, computed by finding the largest difference in backscatter values in a time series ranging from November to February.
