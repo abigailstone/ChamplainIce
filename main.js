@@ -116,22 +116,27 @@ var getIceOff = function(stack, year){
  * Current Ice Layer 
  ***************************************/
 
-// Get top image and filter it for Otsu segmentation
-var topImage = ee.ImageCollection(sentinel1.first())
+// Get the most recent and put it in an ee.ImageCollection for the Frost function
+var topImage = ee.ImageCollection(sentinel1.sort('system:time_start', false).first())
+// Frost filter
 var topFiltered = filters.frostFilter(topImage, 5, -1)
 
+// Get the most recent image from the smoothed collection
 var mostrecent = topFiltered.first().select('smooth');
+
+// Compute histogram for input into Otsu threshold computation
 var hist = mostrecent.reduceRegion({
   reducer:ee.Reducer.histogram(),
   scale:30,
   maxPixels:1e9
 });
 
-// otsu processing
+// otsu segmentation
 var otsuthresh = processing.otsu(hist);
 var ice = ee.Image.constant(0).updateMask(waterMask)
 ice = ice.where(mostrecent.lt(otsuthresh), 1)
 
+// Create most recent ice cover layer
 var currentIceLayer = ui.Map.Layer(ice).setVisParams({
   min: 0, 
   max: 1,
@@ -215,10 +220,10 @@ var checkPanel = ui.Panel({
 checkPanel.add(ui.Checkbox({
   label: 'Overlay current conditions',
   onChange: function(value){
-    print('check', value);
     Map.layers().get(1).setShown(value);
   }
 }))
+checkPanel.add(ui.Label('Image date: '+mostrecent.date().format('MM/dd/yyyy').getInfo()))
 Map.add(checkPanel);
 
 // Add current ice conditions and set to invisble
