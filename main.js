@@ -196,7 +196,7 @@ layerPanel.add(ui.Button({
 // add info label
 layerPanel.add(ui.Label({
   value:'Info & Code', 
-  targetUrl:'https://www.github.com/abigailstone/'
+  targetUrl:'https://www.github.com/abigailstone/champlain-ice'
 }))
 
 Map.add(layerPanel);
